@@ -1,9 +1,9 @@
 {
-  "ruleVersion": "1.1.0",
+  "ruleVersion": "1.2.0",
   "timing": {
     "runtime": "v24.22.3",
-    "samples": 7760,
-    "p95Ms": 0.11
+    "samples": 18719,
+    "p95Ms": 0.153
   },
   "sources": {
     "phiusiil": {
@@ -18,10 +18,11 @@
             "suspicious": 3
           },
           "phishing": {
-            "low": 81109,
+            "low": 81097,
             "invalid": 655,
             "inconclusive": 344,
-            "suspicious": 657
+            "suspicious": 666,
+            "high": 3
           }
         },
         "holdout": {
@@ -65,6 +66,42 @@
             "low": 117,
             "suspicious": 3,
             "inconclusive": 1
+          }
+        }
+      }
+    },
+    "edgephish": {
+      "sha256": "fed0007163354d71e694ef3c83328417da4770c887f76697323ad2f86e665b90",
+      "sourceRows": 340000,
+      "duplicates": 287,
+      "rows": 339713,
+      "counts": {
+        "development": {
+          "legitimate": {
+            "low": 136105,
+            "inconclusive": 9,
+            "suspicious": 19,
+            "invalid": 31
+          },
+          "phishing": {
+            "low": 119184,
+            "suspicious": 15814,
+            "inconclusive": 792,
+            "high": 397,
+            "invalid": 382
+          }
+        },
+        "holdout": {
+          "phishing": {
+            "low": 28873,
+            "suspicious": 4099,
+            "high": 99,
+            "invalid": 81
+          },
+          "legitimate": {
+            "low": 33807,
+            "suspicious": 15,
+            "invalid": 6
           }
         }
       }

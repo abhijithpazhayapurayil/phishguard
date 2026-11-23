@@ -11,7 +11,7 @@ type Link = {
   score: number;
   unresolved: boolean;
 };
-export const RULE_VERSION = "1.1.0";
+export const RULE_VERSION = "1.2.0";
 
 type Verdict = "high" | "suspicious" | "inconclusive" | "low";
 type Scan = {
@@ -120,6 +120,20 @@ function analyzeUrl(
   if (identity.publicSuffix && TLDS.has(identity.publicSuffix)) {
     add("tld", "The domain suffix is a weak risk signal", 5);
   }
+  // Review the path locally. Never include its text in a finding or the report.
+  const path = url.pathname.toLowerCase().replace(/%([\da-f]{2})/g, (encoded, hex: string) => {
+    const character = String.fromCharCode(parseInt(hex, 16));
+    return /[a-z0-9/_.-]/i.test(character) ? character.toLowerCase() : encoded;
+  });
+  const segments = path.split(/[^a-z0-9]+/);
+  const credentialCue = segments.some(segment => ["login", "signin", "verify", "verification", "credential", "password"].includes(segment));
+  const brandInPath = [...BRANDS].some(([brand, domains]) => segments.includes(brand) && !domains.includes(registrable));
+  if (credentialCue && brandInPath) {
+    add("brand-path", "The address path combines a brand and a sign-in or verification cue on an unrelated domain", 35);
+  } else if (credentialCue && (identity.isIp || (identity.publicSuffix && TLDS.has(identity.publicSuffix)))) {
+    add("credential-path", "The address path contains a sign-in or verification cue alongside a URL warning", 15);
+  }
+
   const unresolved = SHORTENERS.has(registrable);
   if (unresolved) add("shortener", "The shortened destination was not resolved", 15);
 

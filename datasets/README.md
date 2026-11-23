@@ -1,32 +1,34 @@
 # PhishGuard benchmark and regional fixtures
 
-This is an evaluation corpus for the local detector. It is not part of the browser build. The public-source export contains 240,530 derived rows after dropping 839 exact input duplicates within sources. The separate synthetic fixture file contains 28 labeled regional cases and benign lookalikes.
+Rule version 1.2.0 was evaluated on 580,243 distinct source records, alongside 28 synthetic regression fixtures. Raw URLs and message text are excluded from derived exports and the browser build.
 
-| Source | Source records | Exported records | Label semantics |
+| Source | Input rows | Evaluated rows | Label |
 | --- | ---: | ---: | --- |
 | PhiUSIIL | 235,795 | 235,370 | Phishing or legitimate URL |
-| SMS Spam Collection | 5,574 | 5,160 | Spam or ham. Spam is broader than scam or phishing. |
-| Regional fixtures | 28 | 28 | Synthetic benign, scam, or unresolved |
+| SMS Spam Collection | 5,574 | 5,160 | Spam or ham |
+| EdgePhish-5G | 340,000 | 339,713 | Phishing or legitimate URL |
 
-## Files and reproduction
+## Reproduce
 
-- `benchmark.jsonl.gz` contains one JSON object per distinct input, with source, source label, opaque input and group identifiers, partition, detector verdict, fired rule IDs, and heuristic score. Raw URLs and SMS content are omitted. The export supports analysis of current rule signals, and regenerating it from source is necessary when rules change.
-- `benchmark-summary.json` records archive checksums, duplicates, verdict counts by source and partition, rule version, and desktop Node scan timing. The archive checksums identify the upstream snapshots used.
-- `regional-fixtures.json` contains the checked-in examples exercised by the automated regression suite. These examples were authored alongside the rules and are development fixtures.
+Run `python scripts/prepare-corpus.py <archive-cache-dir>` from the project root with Python 3.11+ and Node.js 22.13+. Keep the cache outside the project directory. The script fetches the two fixed UCI archives when needed. To include EdgePhish, download the publisher's `urls_dataset.csv` into the cache directory as `edgephish.csv`. No URLs found in the corpus are visited.
 
-Run `python scripts/prepare-corpus.py <archive-cache-dir>` from the project root with Python 3.11+ and Node 22.13+ available. The script downloads only the two fixed UCI archive URLs when needed. It evaluates source inputs in memory and never visits URLs found in the corpus. Keep the source archive cache outside the project directory.
+- `benchmark.jsonl.gz` contains one derived row per distinct UCI input with the source, label, hashed IDs, group, partition, verdict, rule IDs, and score.
+- `edgephish.local.jsonl.gz` is a separate local export. It is ignored by Git and excluded from deployment because the publisher describes the dataset as intended for academic research and adds terms for commercial use.
+- `benchmark-summary.json` records source checksums, duplicate counts, verdict counts, and desktop Node scan timing.
+- `regional-fixtures.json` holds the 28 synthetic examples used in the regression suite.
 
-The reproducible split assigns groups to development or holdout. URL groups use registrable domains where available. SMS groups use a rough normalized message pattern. This reduces split overlap but does not establish campaign independence or a chronological split. The corpus is historical and does not measure current live threats or the prevalence of Indian scams.
+The grouped split uses registrable domains for URLs and a rough normalized template for messages. EdgePhish also excludes exact input duplicates seen in PhiUSIIL. This reduces overlap but does not establish campaign independence or a chronological split. The results do not measure live threats.
 
-## Initial measurement
+## Results
 
-On the grouped URL holdout, Suspicious or High risk was returned for 134 of 17,755 phishing records (0.75%). An additional 135 were inconclusive and 137 were invalid. None of the 26,932 legitimate holdout records returned Suspicious or High risk. On the SMS spam holdout, 3 of 121 spam records and 1 of 922 ham records returned Suspicious or High risk. These rates show narrow rule coverage. The local verdict only describes the completed checks.
+At the Suspicious or High risk threshold, the scanner flagged 134 of 17,755 phishing URLs and 0 of 26,932 legitimate URLs in the PhiUSIIL holdout. In the EdgePhish holdout it flagged 4,198 of 33,152 phishing URLs and 15 of 33,828 legitimate URLs. These corpora have different sources and inputs, so their rates should not be compared as a before-and-after improvement. On the SMS holdout, it flagged 3 of 121 spam records and 1 of 922 ham records. Spam is broader than phishing.
 
-Desktop scan p95 was 0.11 ms over 7,760 sampled calls in Node. This excludes page load, rendering and any OCR. No mobile performance claim is made.
+Desktop Node scan p95 was 0.153 ms over 18,719 sampled calls. This excludes page load, rendering and OCR.
 
-## Source attribution
+## Attribution
 
-- Prasad, A. and Chandra, S. (2024). [PhiUSIIL Phishing URL (Website)](https://archive.ics.uci.edu/dataset/967/phiusil+phishing+url+dataset). UCI Machine Learning Repository. [Research paper DOI](https://doi.org/10.1016/j.cose.2023.103545).
-- Almeida, T. and Hidalgo, J. (2011). [SMS Spam Collection](https://doi.org/10.24432/C5CC84). UCI Machine Learning Repository.
-- Both source datasets are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The benchmark export adapts them through deduplication, grouping, and local rule scoring.
+- [PhiUSIIL Phishing URL (Website)](https://archive.ics.uci.edu/dataset/967/phiusil+phishing+url+dataset). Prasad, A. and Chandra, S. UCI Machine Learning Repository, 2024.
+- [SMS Spam Collection](https://doi.org/10.24432/C5CC84). Almeida, T. and Hidalgo, J. UCI Machine Learning Repository, 2011.
+- The two UCI datasets are [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The released export adapts them through deduplication, grouping and scoring.
+- [EdgePhish-5G](https://doi.org/10.5281/zenodo.19371661). Hassan Saeed AlBattra, 2026. See the [publisher's terms and dataset notes](https://github.com/Hassan-Albattra/EdgePhish-5G/blob/main/data/DATASET_README.md).
 

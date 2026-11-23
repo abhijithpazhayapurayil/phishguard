@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@tesseract.js-data/hin": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "tesseract.js": "^7.0.0",
+    "tesseract.js-core": "^6.1.2",
     "tldts": "^7.0.0",
     "tr46": "^5.1.1"
   },

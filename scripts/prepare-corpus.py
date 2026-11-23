@@ -40,6 +40,16 @@ def rows(directory):
                         label, message = line.rstrip("\r\n").split("\t", 1)
                         yield {"source": source, "input": message, "label": label}
 
+    edge = directory / "edgephish.csv"
+    if edge.exists():
+        with edge.open("rb") as archive:
+            digest = hashlib.file_digest(archive, "sha256").hexdigest()
+        yield {"source": "edgephish", "sha256": digest}
+        with edge.open(encoding="utf-8-sig", newline="") as stream:
+            for row in csv.DictReader(stream):
+                yield {"source": "edgephish", "input": row["url"],
+                       "label": {"0": "legitimate", "1": "phishing"}[row["label"]]}
+
 def main():
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)

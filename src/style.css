@@ -172,3 +172,12 @@ textarea::placeholder { color: #6e695e; }
   .brand { gap: .45rem; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+.screenshot-input { display: grid; gap: .5rem; margin-bottom: 1.15rem; }
+.screenshot-input select { justify-self: start; font: inherit; padding: .35rem; }
+.screenshot-input input { min-width: 0; max-width: 100%; font: inherit; }
+.screenshot-input p { color: #e3e8ff; font-size: .88rem; }
+.screenshot-input button { justify-self: start; }
+.online-explanation { margin-top: 1rem; border-top: 1px dashed #a59a85; padding-top: .7rem; }
+.online-explanation summary { cursor: pointer; font-weight: 650; }
+.online-explanation p, .online-explanation code { display: block; margin-top: .4rem; }
+.online-explanation button { margin-top: .65rem; min-height: 44px; padding: .4rem .7rem; border: 1px solid var(--blue); color: var(--blue); background: transparent; }

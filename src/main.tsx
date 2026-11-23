@@ -1,9 +1,11 @@
 import { useRef, useState, type FormEvent } from "react";
 import { createRoot } from "react-dom/client";
 import { scanInput, verdictFor } from "./scanner.ts";
+import { ScreenshotInput } from "./screenshot-input.tsx";
+import { OnlineExplanation } from "./online-explanation.tsx";
 import "./style.css";
 
-type Mode = "url" | "text";
+type Mode = "url" | "text" | "screenshot";
 type Scan = ReturnType<typeof scanInput>;
 
 const VERDICTS = {
@@ -43,7 +45,7 @@ function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: M
         </div>
       </div>
       <ul className="coverage">{scan.coverage.map(item => <li key={item}>{item}</li>)}</ul>
-      {mode === "text" && (
+      {mode !== "url" && (
         <div className="result-group">
           <h3>Message signals</h3>
           {messageFindings.length > 0 ? (
@@ -75,6 +77,9 @@ function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: M
         </div>
       )}
       {advice && <aside className="next-action"><h3>What to do</h3><p>{advice}</p></aside>}
+      {__PHISHGUARD_GEMINI__ && <OnlineExplanation verdict={scan.verdict} findings={[
+        ...messageFindings.map(item => item.id), ...links.flatMap(link => link.findings.map(item => item.id)),
+      ]} />}
     </div>
   );
 }
@@ -93,7 +98,7 @@ function App() {
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setResult(scanInput(input, mode));
+    setResult(scanInput(input, mode === "url" ? "url" : "text"));
     setRun(previous => previous + 1);
   }
 
@@ -116,15 +121,16 @@ function App() {
           <form className="editor" onSubmit={submit}>
             <fieldset className="mode-picker">
               <legend className="visually-hidden">Input type</legend>
-              {(["url", "text"] as const).map(option => (
+              {(["url", "text", "screenshot"] as const).map(option => (
                 <label key={option}>
                   <input type="radio" name="mode" value={option} checked={mode === option}
-                    onChange={() => { setMode(option); setResult(null); }} />
-                  <span>{option === "url" ? "URL" : "Message"}</span>
+                    onChange={() => { setMode(option); updateInput(""); }} />
+                  <span>{option === "url" ? "URL" : option === "text" ? "Message" : "Screenshot"}</span>
                 </label>
               ))}
             </fieldset>
-            <label className="input-label" htmlFor="scan-input">{mode === "url" ? "URL to check" : "Message to check"}</label>
+            {mode === "screenshot" && <ScreenshotInput onText={updateInput} />}
+            <label className="input-label" htmlFor="scan-input">{mode === "url" ? "URL to check" : mode === "text" ? "Message to check" : "Extracted text"}</label>
             <textarea ref={field} id="scan-input" value={input} rows={mode === "url" ? 4 : 6}
               className={mode === "url" ? "url-input" : ""}
               placeholder={mode === "url" ? "https://" : "Paste the message here"}
@@ -136,10 +142,10 @@ function App() {
                 updateInput("");
                 field.current?.focus();
               }}>Clear</button>}
-              <button type="button" className="quiet sample" onClick={() => {
+              {mode !== "screenshot" && <button type="button" className="quiet sample" onClick={() => {
                 updateInput(SAMPLES[mode]);
                 field.current?.focus();
-              }}>Try a sample</button>
+              }}>Try a sample</button>}
             </div>
           </form>
         </div>

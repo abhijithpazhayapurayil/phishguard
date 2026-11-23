@@ -105,46 +105,47 @@ function App() {
   return (
     <main>
       <header className="masthead">
-        <div className="brand"><span className="brand-mark" aria-hidden="true">✓</span><h1>PhishGuard</h1></div>
-        <span className="privacy"><span aria-hidden="true" />On-device scanning</span>
+        <div className="brand"><span className="brand-mark" aria-hidden="true">P</span><h1>PhishGuard</h1></div>
+        <span className="privacy"><span aria-hidden="true" />Scans stay on this device</span>
       </header>
-      <div className="intro">
-        <p className="headline">Check before you click.</p>
-        <p>Inspect a link or message for signs of a scam.</p>
-      </div>
       <div className="workspace">
-        <form className="editor" onSubmit={submit}>
-          <fieldset className="mode-picker">
-            <legend className="visually-hidden">Input type</legend>
-            {(["url", "text"] as const).map(option => (
-              <label key={option}>
-                <input type="radio" name="mode" value={option} checked={mode === option}
-                  onChange={() => { setMode(option); setResult(null); }} />
-                <span>{option === "url" ? "URL" : "Message"}</span>
-              </label>
-            ))}
-          </fieldset>
-          <label className="input-label" htmlFor="scan-input">{mode === "url" ? "URL to check" : "Message to check"}</label>
-          <textarea ref={field} id="scan-input" value={input} rows={mode === "url" ? 4 : 6}
-            className={mode === "url" ? "url-input" : ""}
-            placeholder={mode === "url" ? "https://" : "Paste the message here"}
-            autoComplete="off" spellCheck={false} autoCapitalize="off"
-            onChange={event => updateInput(event.target.value)} />
-          <div className="actions">
-            <button type="submit" className="scan-button">Scan</button>
-            {input && <button type="button" className="quiet" onClick={() => {
-              updateInput("");
-              field.current?.focus();
-            }}>Clear</button>}
-            <button type="button" className="quiet sample" onClick={() => {
-              updateInput(SAMPLES[mode]);
-              field.current?.focus();
-            }}>Try a sample</button>
+        <div className="entry">
+          <div className="intro">
+            <p className="headline">Check a link<br />or message.</p>
           </div>
-        </form>
+          <form className="editor" onSubmit={submit}>
+            <fieldset className="mode-picker">
+              <legend className="visually-hidden">Input type</legend>
+              {(["url", "text"] as const).map(option => (
+                <label key={option}>
+                  <input type="radio" name="mode" value={option} checked={mode === option}
+                    onChange={() => { setMode(option); setResult(null); }} />
+                  <span>{option === "url" ? "URL" : "Message"}</span>
+                </label>
+              ))}
+            </fieldset>
+            <label className="input-label" htmlFor="scan-input">{mode === "url" ? "URL to check" : "Message to check"}</label>
+            <textarea ref={field} id="scan-input" value={input} rows={mode === "url" ? 4 : 6}
+              className={mode === "url" ? "url-input" : ""}
+              placeholder={mode === "url" ? "https://" : "Paste the message here"}
+              autoComplete="off" spellCheck={false} autoCapitalize="off"
+              onChange={event => updateInput(event.target.value)} />
+            <div className="actions">
+              <button type="submit" className="scan-button">Scan</button>
+              {input && <button type="button" className="quiet" onClick={() => {
+                updateInput("");
+                field.current?.focus();
+              }}>Clear</button>}
+              <button type="button" className="quiet sample" onClick={() => {
+                updateInput(SAMPLES[mode]);
+                field.current?.focus();
+              }}>Try a sample</button>
+            </div>
+          </form>
+        </div>
         <section className="inspection" aria-label="Scan report">
           <div className="inspection-header">
-            <span className="inspection-mark" aria-hidden="true">⌖</span>
+            <span className="inspection-mark" aria-hidden="true" />
             <h2>Scan report</h2>
           </div>
           <div role="status" className="visually-hidden">{announcement}</div>
@@ -152,7 +153,7 @@ function App() {
             <div className="empty-state">
               <span className="empty-mark" aria-hidden="true" />
               <p>Ready to scan</p>
-              <p className="muted">Your verdict and the reasons behind it will appear here.</p>
+              <p className="muted">The verdict and findings will appear here after you scan.</p>
             </div>
           )}
           {result?.status === "invalid" && <p className="input-error">{result.message}</p>}
@@ -169,4 +170,5 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
     console.warn("Offline installation failed", error);
   });
 }
+
 

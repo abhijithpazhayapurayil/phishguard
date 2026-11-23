@@ -10,3 +10,4 @@ textarea { width: 100%; resize: vertical; }
 button { background: #183435; color: white; border: 1px solid #183435; border-radius: .35rem; padding: .4rem 1rem; cursor: pointer; }
 button.secondary { background: white; color: #183435; }
 :focus-visible { outline: 3px solid #2375a0; outline-offset: 2px; }
+.link-verdict { display: block; color: #3e5858; }

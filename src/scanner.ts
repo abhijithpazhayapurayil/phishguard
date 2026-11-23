@@ -11,6 +11,8 @@ type Link = {
   score: number;
   unresolved: boolean;
 };
+export const RULE_VERSION = "1.1.0";
+
 type Verdict = "high" | "suspicious" | "inconclusive" | "low";
 type Scan = {
   status: "ok";
@@ -36,14 +38,30 @@ const CONFUSABLES: Record<string, string> = {
 };
 const RULES = [
   ["urgency", "Urgency or a threat of immediate consequences", 20,
-    /\b(?:act immediately|immediately|within (?:\d+|one|two) hours?|account suspended|electricity (?:will be )?(?:cut off|disconnected)|warrant issued|police action|final warning)\b/i],
+    /\b(?:act immediately|within (?:\d+|one|two) hours?|account (?:has been )?suspended|(?:electricity|power) (?:will be )?(?:cut off|disconnected)|warrant issued|police action|final warning|abhi (?:bharo|karo)|bijli (?:kat|kaat|bandh?) (?:jayegi|hogi))\b|बिजली (?:कट जाएगी|बंद होगी)/giu],
   ["lure", "Unexpected reward, payment or refund language", 25,
-    /\b(?:lottery reward|cashback bonus|income tax refund|crypto giveaway|kyc expired|fee refund|(?:telegram|prepaid) tasks?|redelivery charge|credited)\b/i],
+    /\b(?:lottery reward|cashback bonus|income tax refund|crypto giveaway|kyc expired|fee refund|(?:telegram|prepaid) tasks?|redelivery (?:charge|fee)|(?:deposit|pay) to unlock (?:the )?(?:commission|earnings)|parcel (?:release|redelivery) fee|upi collect request|(?:paisa|paise) (?:receive|lene) ke liye)\b|पैसे (?:पाने|लेने) के लिए/giu],
   ["coercion", "Request involving credentials, a payment PIN or remote access", 30,
-    /\b(?:(?:download|install) (?:an? )?apk|install (?:anydesk|teamviewer)|(?:enter|share) (?:your )?upi pin to receive|(?:forward|share|send|provide) (?:your |the )?otp)\b/i],
+    /\b(?:(?:download|install) (?:an? )?apk|install (?:anydesk|teamviewer)|(?:enter|share|type) (?:your )?upi pin to (?:receive|collect)|(?:forward|share|send|provide) (?:your |the )?otp|otp (?:bhejo|batao|share karo|mat (?:bhejo|batao))|upi pin (?:dalo|daalo|batao))\b|(?:ओटीपी|OTP)\s+(?:बताओ|भेजो|शेयर करो|मत बताओ|मत भेजो)|(?:यूपीआई|UPI)\s+(?:पिन|PIN)\s+(?:डालो|बताओ)/giu],
   ["authority", "Claims involving a frequently impersonated service", 25,
-    /\b(?:india post|state electricity board|sbi yono|traffic e[- ]?challan)\b/i],
+    /\b(?:india post|state electricity board|sbi yono|traffic e[- ]?challan|bijli board|dak vibhag)\b|(?:डाक विभाग|बिजली बोर्ड|ई[- ]?चालान)/giu],
 ] as const;
+
+// Suppress clear advice immediately before a matched request. A later
+// affirmative request is still evaluated independently.
+const PROTECTIVE_PREFIX = /(?:\b(?:never|do not|don't|don’t|should not|shouldn't|avoid|not to|mat)\s+(?:(?:ever|directly|please)\s+)?|(?:कभी भी |कभी )?मत\s*)$/iu;
+const PROTECTIVE_MATCH = /\bmat\s|मत\s/u;
+const PROTECTIVE_SUFFIX = /^\s+(?:karna\s+mana\s+hai|nahin\s+karna|नहीं करना)/iu;
+
+function findCue(message: string, pattern: RegExp): RegExpExecArray | undefined {
+  for (const match of message.matchAll(pattern)) {
+    const prefix = message.slice(Math.max(0, match.index - 48), match.index);
+    const suffix = message.slice(match.index + match[0].length, match.index + match[0].length + 32);
+    if (!PROTECTIVE_PREFIX.test(prefix) && !PROTECTIVE_MATCH.test(match[0])
+      && !PROTECTIVE_SUFFIX.test(suffix)) return match;
+  }
+  return undefined;
+}
 
 const URL_CANDIDATE = /(?<![\p{L}\p{N}_@.\-])(?:[a-z][a-z\d+.-]*:\/\/[^\s<>"'\x60]+|(?:[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}-]*\.)+(?:[\p{L}][\p{L}\p{M}\p{N}-]*|\d{1,3})(?![\p{L}\p{M}\p{N}@_-])(?::\d+)?(?:[/#?][^\s<>"'\x60]*)?)/giu;
 
@@ -202,7 +220,7 @@ export function scanInput(input: string, mode: "url" | "text"): Scan | {
     }
     message += input.slice(previousEnd);
     for (const [id, label, weight, pattern] of RULES) {
-      const match = pattern.exec(message);
+      const match = findCue(message, pattern);
       if (match) messageFindings.push({ id, label, weight, start: match.index, end: match.index + match[0].length });
     }
   }

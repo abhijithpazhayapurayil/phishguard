@@ -1,0 +1,170 @@
+[
+  {
+    "category": "otp",
+    "label": "scam",
+    "input": "Forward the OTP to complete this request.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "otp",
+    "label": "benign",
+    "input": "Never forward the OTP to anyone.",
+    "verdict": "low"
+  },
+  {
+    "category": "otp",
+    "label": "benign",
+    "input": "Do not share your OTP. Our staff will never ask for it.",
+    "verdict": "low"
+  },
+  {
+    "category": "otp",
+    "label": "scam",
+    "input": "Never share your OTP. For this request, please send your OTP to proceed.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "otp-hi",
+    "label": "scam",
+    "input": "ओटीपी बताओ।",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "otp-hi",
+    "label": "benign",
+    "input": "अपना ओटीपी मत बताओ।",
+    "verdict": "low"
+  },
+  {
+    "category": "otp-hi",
+    "label": "scam",
+    "input": "OTP bhejo, abhi karo.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "otp-hi",
+    "label": "benign",
+    "input": "OTP mat bhejo kisi ko.",
+    "verdict": "low"
+  },
+  {
+    "category": "upi",
+    "label": "scam",
+    "input": "Enter your UPI PIN to receive a refund.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "upi",
+    "label": "benign",
+    "input": "Never enter your UPI PIN to receive money.",
+    "verdict": "low"
+  },
+  {
+    "category": "upi",
+    "label": "scam",
+    "input": "UPI collect request. Paise lene ke liye UPI PIN daalo.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "upi",
+    "label": "benign",
+    "input": "UPI payment completed. View it in your history.",
+    "verdict": "low"
+  },
+  {
+    "category": "upi-hi",
+    "label": "scam",
+    "input": "पैसे पाने के लिए UPI PIN डालो।",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "utility",
+    "label": "scam",
+    "input": "State Electricity Board: final warning. Share your OTP.",
+    "verdict": "high"
+  },
+  {
+    "category": "utility",
+    "label": "scam",
+    "input": "Bijli board: bijli kat jayegi. OTP bhejo.",
+    "verdict": "high"
+  },
+  {
+    "category": "utility",
+    "label": "scam",
+    "input": "बिजली बोर्ड: बिजली कट जाएगी। OTP बताओ।",
+    "verdict": "high"
+  },
+  {
+    "category": "utility",
+    "label": "benign",
+    "input": "Your electricity bill is ready. View the statement in your usual app.",
+    "verdict": "low"
+  },
+  {
+    "category": "courier",
+    "label": "scam",
+    "input": "India Post: Final warning. Pay a redelivery fee and forward OTP.",
+    "verdict": "high"
+  },
+  {
+    "category": "courier",
+    "label": "benign",
+    "input": "Your parcel has arrived at the pickup point.",
+    "verdict": "low"
+  },
+  {
+    "category": "jobs",
+    "label": "scam",
+    "input": "Telegram tasks. Deposit to unlock your earnings. Install AnyDesk.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "jobs",
+    "label": "benign",
+    "input": "Your interview is scheduled for Thursday at 10 AM.",
+    "verdict": "low"
+  },
+  {
+    "category": "remote",
+    "label": "benign",
+    "input": "Do not install AnyDesk to resolve a payment issue.",
+    "verdict": "low"
+  },
+  {
+    "category": "remote",
+    "label": "scam",
+    "input": "Install TeamViewer so someone can assist with the payment.",
+    "verdict": "suspicious"
+  },
+  {
+    "category": "returns",
+    "label": "benign",
+    "input": "Your refund was processed. Check your original payment method.",
+    "verdict": "low"
+  },
+  {
+    "category": "delivery",
+    "label": "benign",
+    "input": "Your parcel will arrive tomorrow. No action is required.",
+    "verdict": "low"
+  },
+  {
+    "category": "pay",
+    "label": "benign",
+    "input": "Your standing instruction is scheduled for the first of next month.",
+    "verdict": "low"
+  },
+  {
+    "category": "traffic",
+    "label": "scam",
+    "input": "Traffic e-challan. Final warning. Download an APK.",
+    "verdict": "high"
+  },
+  {
+    "category": "shortener",
+    "label": "unknown",
+    "input": "See hxxps://bit[.]ly/example-only.",
+    "verdict": "inconclusive"
+  }
+]

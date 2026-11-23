@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { createRoot } from "react-dom/client";
-import { scanInput } from "./scanner.ts";
+import { scanInput, verdictFor } from "./scanner.ts";
 import "./style.css";
 
 const VERDICTS = {
@@ -17,7 +17,9 @@ function App() {
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setResult(scanInput(input, mode));
+    const scan = scanInput(input, mode);
+    if (scan.status === "ok") scan.links.sort((left, right) => right.score - left.score);
+    setResult(scan);
   }
 
   return (
@@ -63,13 +65,20 @@ function App() {
               <ol>{result.links.map((link, index) => (
                 <li key={index}>
                   <strong>{link.display}</strong>
+                  <span className="link-verdict"> {VERDICTS[verdictFor(link.score, link.unresolved)]} · {link.score}/100</span>
                   {link.findings.length > 0 && (
                     <ul>{link.findings.map((finding) => <li key={finding.id}>{finding.label}</li>)}</ul>
                   )}
                 </li>
               ))}</ol>
             </>}
-            <p>If a message asks for payment, a PIN, or a code, verify the request through a contact you already trust.</p>
+            {result.messageFindings.some((finding) => finding.id === "coercion") ? (
+              <p>Keep your PIN and OTP private. Verify the request through the official app or a contact you already trust.</p>
+            ) : result.links.some((link) => link.unresolved) ? (
+              <p>Ask the sender for the full destination or go directly to the official site.</p>
+            ) : result.verdict === "high" || result.verdict === "suspicious" ? (
+              <p>Verify any request for payment or account access through the official app before acting.</p>
+            ) : null}
           </>
         )}
       </section>

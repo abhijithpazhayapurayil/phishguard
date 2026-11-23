@@ -1,0 +1,73 @@
+{
+  "ruleVersion": "1.1.0",
+  "timing": {
+    "runtime": "v24.22.3",
+    "samples": 7760,
+    "p95Ms": 0.11
+  },
+  "sources": {
+    "phiusiil": {
+      "sha256": "0a639fd03aea6308c5b1c10c92aa23c2ce1505447a9137271865cd0badc9a59a",
+      "sourceRows": 235795,
+      "duplicates": 425,
+      "rows": 235370,
+      "counts": {
+        "development": {
+          "legitimate": {
+            "low": 107915,
+            "suspicious": 3
+          },
+          "phishing": {
+            "low": 81109,
+            "invalid": 655,
+            "inconclusive": 344,
+            "suspicious": 657
+          }
+        },
+        "holdout": {
+          "legitimate": {
+            "low": 26932
+          },
+          "phishing": {
+            "low": 17349,
+            "suspicious": 134,
+            "invalid": 137,
+            "inconclusive": 135
+          }
+        }
+      }
+    },
+    "sms-spam": {
+      "sha256": "1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3",
+      "sourceRows": 5574,
+      "duplicates": 414,
+      "rows": 5160,
+      "counts": {
+        "development": {
+          "ham": {
+            "low": 3583,
+            "suspicious": 12,
+            "inconclusive": 1
+          },
+          "spam": {
+            "low": 474,
+            "suspicious": 42,
+            "inconclusive": 5
+          }
+        },
+        "holdout": {
+          "ham": {
+            "low": 919,
+            "suspicious": 1,
+            "inconclusive": 2
+          },
+          "spam": {
+            "low": 117,
+            "suspicious": 3,
+            "inconclusive": 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "ruleVersion": "1.2.1",
+  "deduplicatedSmsRows": 5160,
+  "spamHamVerdicts": {
+    "ham": {
+      "low": 4502,
+      "suspicious": 13,
+      "inconclusive": 3
+    },
+    "spam": {
+      "low": 591,
+      "suspicious": 45,
+      "inconclusive": 6
+    }
+  },
+  "regionalSyntheticFixtures": {
+    "otp": {
+      "checked": 4,
+      "matched": 4
+    },
+    "otp-hi": {
+      "checked": 4,
+      "matched": 4
+    },
+    "upi": {
+      "checked": 4,
+      "matched": 4
+    },
+    "upi-hi": {
+      "checked": 1,
+      "matched": 1
+    },
+    "utility": {
+      "checked": 4,
+      "matched": 4
+    },
+    "courier": {
+      "checked": 2,
+      "matched": 2
+    },
+    "jobs": {
+      "checked": 2,
+      "matched": 2
+    },
+    "remote": {
+      "checked": 2,
+      "matched": 2
+    },
+    "returns": {
+      "checked": 1,
+      "matched": 1
+    },
+    "delivery": {
+      "checked": 1,
+      "matched": 1
+    },
+    "pay": {
+      "checked": 1,
+      "matched": 1
+    },
+    "traffic": {
+      "checked": 1,
+      "matched": 1
+    },
+    "shortener": {
+      "checked": 1,
+      "matched": 1
+    }
+  }
+}

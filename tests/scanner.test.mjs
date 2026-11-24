@@ -88,3 +88,28 @@ test("flags Parivahan and mParivahan lookalikes while allowing the government do
     assert.equal(scan(input).score, 0, input);
   }
 });
+
+test("offline advisory can request verification without overriding known local warnings", () => {
+  const low = scanInput("https://example.com/session", "url", () => true);
+  assert.equal(low.status, "ok");
+  assert.equal(low.verdict, "inconclusive");
+  assert.equal(low.score, 0);
+  assert.equal(low.links[0].reviewRequested, true);
+  const risky = scanInput("https://sbi.example.com/", "url", () => false);
+  assert.equal(risky.status, "ok");
+  assert.equal(risky.verdict, "suspicious");
+  const blocked = scanInput("https://bit.ly/sample", "url", () => {
+    throw new Error("Unresolved links must not be passed to the model");
+  });
+  assert.equal(blocked.status, "ok");
+  assert.equal(blocked.verdict, "inconclusive");
+});
+
+test("a service warning about OTP requests does not trigger the credential rule", () => {
+  const safe = scanInput("We will never ask you to share your OTP.", "text");
+  assert.equal(safe.status, "ok");
+  assert.equal(safe.verdict, "low");
+  const request = scanInput("We never ask you to share your OTP. For this request, share your OTP now.", "text");
+  assert.equal(request.status, "ok");
+  assert.equal(request.verdict, "suspicious");
+});

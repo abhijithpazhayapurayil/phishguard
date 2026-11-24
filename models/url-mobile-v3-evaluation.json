@@ -1,0 +1,608 @@
+{
+  "featureMetadata": {
+    "version": 1,
+    "ruleVersion": "1.2.1",
+    "features": [
+      "log_host_length",
+      "log_registered_label_length",
+      "subdomain_depth",
+      "host_digit_fraction",
+      "host_hyphens",
+      "ip_host",
+      "idn_host",
+      "log_path_length",
+      "path_depth",
+      "path_digit_fraction",
+      "log_query_length",
+      "query_parameter_count",
+      "pct_encoded_count",
+      "path_has_file_extension",
+      "host_action_word_count",
+      "path_action_word_count",
+      "host_authority_word_count",
+      "authority_with_action",
+      "recognized_brand_mismatch",
+      "confusable_brand",
+      "unusual_label_entropy",
+      "suffix_warning",
+      "shortener",
+      "brand_signin_path"
+    ],
+    "statistics": {
+      "phiusiil": {
+        "sha256": "0a639fd03aea6308c5b1c10c92aa23c2ce1505447a9137271865cd0badc9a59a",
+        "rows": 235795,
+        "invalid": 800,
+        "duplicate": 1085,
+        "overlappingDomain": 0
+      },
+      "edgephish": {
+        "sha256": "fed0007163354d71e694ef3c83328417da4770c887f76697323ad2f86e665b90",
+        "rows": 340000,
+        "invalid": 501,
+        "duplicate": 490,
+        "overlappingDomain": 45714
+      },
+      "phreshphish": {
+        "sha256": "ecc1efc3a8207f91b3953546011da5f35bc17907e7ae96ada6beb6635efa6dd7",
+        "rows": 168060,
+        "invalid": 188,
+        "duplicate": 21,
+        "overlappingDomain": 67606
+      }
+    },
+    "featureTiming": {
+      "runtime": "v22.14.0",
+      "samples": 20240,
+      "p95Ms": 0.01900000000023283
+    }
+  },
+  "trainingRows": 234436,
+  "trainingPhishing": 109372,
+  "trainingSources": {
+    "phiusiil": 163772,
+    "phreshphish": 70664
+  },
+  "selection": [
+    {
+      "model": "linear",
+      "minimumCalibrationReviewRecall": 0.37501530924678506,
+      "calibration": [
+        {
+          "rules": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 143,
+            "flaggedLegitimate": 0,
+            "recall": 0.008756889161053277,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 150
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 1477,
+            "flaggedLegitimate": 0,
+            "recall": 0.0904470300061237,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0001341761426235387,
+          "additionalReview": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 5831,
+            "flaggedLegitimate": 24,
+            "recall": 0.3570728720146969,
+            "falsePositiveRate": 0.0011901810066947682,
+            "precision": 0.9959009393680615,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.001662057824733089,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6124,
+            "flaggedLegitimate": 24,
+            "recall": 0.37501530924678506,
+            "falsePositiveRate": 0.0011901810066947682,
+            "precision": 0.996096291476903,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.8143040216969688,
+          "modelRocAuc": 0.7522283202768828
+        },
+        {
+          "rules": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 45,
+            "flaggedLegitimate": 1,
+            "recall": 0.005625,
+            "falsePositiveRate": 0.00013956734124214934,
+            "precision": 0.9782608695652174,
+            "inconclusive": 0
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 1266,
+            "flaggedLegitimate": 4,
+            "recall": 0.15825,
+            "falsePositiveRate": 0.0005582693649685974,
+            "precision": 0.9968503937007874,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0012430076745832562,
+          "additionalReview": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4365,
+            "flaggedLegitimate": 85,
+            "recall": 0.545625,
+            "falsePositiveRate": 0.011863224005582694,
+            "precision": 0.9808988764044944,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.014159275927019604,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4410,
+            "flaggedLegitimate": 86,
+            "recall": 0.55125,
+            "falsePositiveRate": 0.012002791346824844,
+            "precision": 0.9808718861209964,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.9233864943161569,
+          "modelRocAuc": 0.902629099790649
+        }
+      ]
+    },
+    {
+      "model": "boosted-32x7",
+      "minimumCalibrationReviewRecall": 0.3860992039191672,
+      "calibration": [
+        {
+          "rules": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 143,
+            "flaggedLegitimate": 0,
+            "recall": 0.008756889161053277,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 150
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 2521,
+            "flaggedLegitimate": 0,
+            "recall": 0.15437844458052663,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0001341761426235387,
+          "additionalReview": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6012,
+            "flaggedLegitimate": 49,
+            "recall": 0.368156766687079,
+            "falsePositiveRate": 0.002429952888668485,
+            "precision": 0.991915525490843,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.003070915761161658,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6305,
+            "flaggedLegitimate": 49,
+            "recall": 0.3860992039191672,
+            "falsePositiveRate": 0.002429952888668485,
+            "precision": 0.992288322316651,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.8723694932258821,
+          "modelRocAuc": 0.8533470105554466
+        },
+        {
+          "rules": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 45,
+            "flaggedLegitimate": 1,
+            "recall": 0.005625,
+            "falsePositiveRate": 0.00013956734124214934,
+            "precision": 0.9782608695652174,
+            "inconclusive": 0
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 1236,
+            "flaggedLegitimate": 4,
+            "recall": 0.1545,
+            "falsePositiveRate": 0.0005582693649685974,
+            "precision": 0.9967741935483871,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0012430076745832562,
+          "additionalReview": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4434,
+            "flaggedLegitimate": 78,
+            "recall": 0.55425,
+            "falsePositiveRate": 0.010886252616887648,
+            "precision": 0.9827127659574468,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.013095566935115922,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4479,
+            "flaggedLegitimate": 79,
+            "recall": 0.559875,
+            "falsePositiveRate": 0.011025819958129797,
+            "precision": 0.9826678367705134,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.9300444172512738,
+          "modelRocAuc": 0.9120243021632939
+        }
+      ]
+    },
+    {
+      "model": "boosted-64x7",
+      "minimumCalibrationReviewRecall": 0.42020820575627676,
+      "calibration": [
+        {
+          "rules": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 143,
+            "flaggedLegitimate": 0,
+            "recall": 0.008756889161053277,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 150
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 2618,
+            "flaggedLegitimate": 0,
+            "recall": 0.1603184323331292,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0001341761426235387,
+          "additionalReview": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6569,
+            "flaggedLegitimate": 46,
+            "recall": 0.4022657685241886,
+            "falsePositiveRate": 0.002281180262831639,
+            "precision": 0.9930461073318216,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.002904596406092667,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6862,
+            "flaggedLegitimate": 46,
+            "recall": 0.42020820575627676,
+            "falsePositiveRate": 0.002281180262831639,
+            "precision": 0.993341053850608,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.8812120906230424,
+          "modelRocAuc": 0.8581442702723961
+        },
+        {
+          "rules": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 45,
+            "flaggedLegitimate": 1,
+            "recall": 0.005625,
+            "falsePositiveRate": 0.00013956734124214934,
+            "precision": 0.9782608695652174,
+            "inconclusive": 0
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 1632,
+            "flaggedLegitimate": 4,
+            "recall": 0.204,
+            "falsePositiveRate": 0.0005582693649685974,
+            "precision": 0.9975550122249389,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0012430076745832562,
+          "additionalReview": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4699,
+            "flaggedLegitimate": 84,
+            "recall": 0.587375,
+            "falsePositiveRate": 0.011723656664340545,
+            "precision": 0.9824378005435919,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.014007549274146968,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4744,
+            "flaggedLegitimate": 85,
+            "recall": 0.593,
+            "falsePositiveRate": 0.011863224005582694,
+            "precision": 0.9823980120107683,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.9414562016226344,
+          "modelRocAuc": 0.9275355198883461
+        }
+      ]
+    },
+    {
+      "model": "boosted-96x9",
+      "minimumCalibrationReviewRecall": 0.43723208818126147,
+      "calibration": [
+        {
+          "rules": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 143,
+            "flaggedLegitimate": 0,
+            "recall": 0.008756889161053277,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 150
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 2894,
+            "flaggedLegitimate": 0,
+            "recall": 0.17721984078383343,
+            "falsePositiveRate": 0.0,
+            "precision": 1.0,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0001341761426235387,
+          "additionalReview": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 6847,
+            "flaggedLegitimate": 38,
+            "recall": 0.4192896509491733,
+            "falsePositiveRate": 0.0018844532606000497,
+            "precision": 0.994480755265069,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.0024580814734737797,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 16330,
+            "legitimate": 20165,
+            "flaggedPhishing": 7140,
+            "flaggedLegitimate": 38,
+            "recall": 0.43723208818126147,
+            "falsePositiveRate": 0.0018844532606000497,
+            "precision": 0.994706046252438,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.8857221099066479,
+          "modelRocAuc": 0.8612943036240058
+        },
+        {
+          "rules": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 45,
+            "flaggedLegitimate": 1,
+            "recall": 0.005625,
+            "falsePositiveRate": 0.00013956734124214934,
+            "precision": 0.9782608695652174,
+            "inconclusive": 0
+          },
+          "rulesPlusModelWarning": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 2505,
+            "flaggedLegitimate": 4,
+            "recall": 0.313125,
+            "falsePositiveRate": 0.0005582693649685974,
+            "precision": 0.9984057393383818,
+            "inconclusive": 0
+          },
+          "warningFalsePositiveUpper95": 0.0012430076745832562,
+          "additionalReview": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4905,
+            "flaggedLegitimate": 84,
+            "recall": 0.613125,
+            "falsePositiveRate": 0.011723656664340545,
+            "precision": 0.9831629585087192,
+            "inconclusive": 0
+          },
+          "reviewFalsePositiveUpper95": 0.014007549274146968,
+          "rulesOrReviewOrUncertain": {
+            "phishing": 8000,
+            "legitimate": 7165,
+            "flaggedPhishing": 4950,
+            "flaggedLegitimate": 85,
+            "recall": 0.61875,
+            "falsePositiveRate": 0.011863224005582694,
+            "precision": 0.9831181727904668,
+            "inconclusive": 0
+          },
+          "modelAveragePrecision": 0.9499231480580624,
+          "modelRocAuc": 0.9370914166085138
+        }
+      ]
+    }
+  ],
+  "selected": "boosted-96x9",
+  "heldOut": {
+    "phi-test": {
+      "rules": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 75,
+        "flaggedLegitimate": 1,
+        "recall": 0.005570823739136894,
+        "falsePositiveRate": 4.955401387512388e-05,
+        "precision": 0.9868421052631579,
+        "inconclusive": 0
+      },
+      "rulesPlusModelWarning": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 2324,
+        "flaggedLegitimate": 2,
+        "recall": 0.17262125826338853,
+        "falsePositiveRate": 9.910802775024777e-05,
+        "precision": 0.999140154772141,
+        "inconclusive": 0
+      },
+      "warningFalsePositiveUpper95": 0.0002994711408274351,
+      "additionalReview": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 6405,
+        "flaggedLegitimate": 35,
+        "recall": 0.4757483473222907,
+        "falsePositiveRate": 0.001734390485629336,
+        "precision": 0.9945652173913043,
+        "inconclusive": 0
+      },
+      "reviewFalsePositiveUpper95": 0.0022876121818191006,
+      "rulesOrReviewOrUncertain": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 6480,
+        "flaggedLegitimate": 36,
+        "recall": 0.48131917106142763,
+        "falsePositiveRate": 0.00178394449950446,
+        "precision": 0.994475138121547,
+        "inconclusive": 0
+      },
+      "modelAveragePrecision": 0.866473364132949,
+      "modelRocAuc": 0.8549321518941869
+    },
+    "phresh-test": {
+      "rules": {
+        "phishing": 8262,
+        "legitimate": 6154,
+        "flaggedPhishing": 46,
+        "flaggedLegitimate": 1,
+        "recall": 0.005567659162430404,
+        "falsePositiveRate": 0.00016249593760155997,
+        "precision": 0.9787234042553191,
+        "inconclusive": 0
+      },
+      "rulesPlusModelWarning": {
+        "phishing": 8262,
+        "legitimate": 6154,
+        "flaggedPhishing": 2584,
+        "flaggedLegitimate": 6,
+        "recall": 0.31275720164609055,
+        "falsePositiveRate": 0.0009749756256093598,
+        "precision": 0.9976833976833976,
+        "inconclusive": 0
+      },
+      "warningFalsePositiveUpper95": 0.0018843932029538667,
+      "additionalReview": {
+        "phishing": 8262,
+        "legitimate": 6154,
+        "flaggedPhishing": 4900,
+        "flaggedLegitimate": 82,
+        "recall": 0.5930767368675866,
+        "falsePositiveRate": 0.013324666883327917,
+        "precision": 0.9835407466880771,
+        "inconclusive": 0
+      },
+      "reviewFalsePositiveUpper95": 0.015951919217046917,
+      "rulesOrReviewOrUncertain": {
+        "phishing": 8262,
+        "legitimate": 6154,
+        "flaggedPhishing": 4946,
+        "flaggedLegitimate": 83,
+        "recall": 0.598644396030017,
+        "falsePositiveRate": 0.013487162820929478,
+        "precision": 0.9834957247961822,
+        "inconclusive": 0
+      },
+      "modelAveragePrecision": 0.9497752578144046,
+      "modelRocAuc": 0.9282238214560251
+    },
+    "edge-transfer": {
+      "rules": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 20121,
+        "flaggedLegitimate": 34,
+        "recall": 0.1258923711262803,
+        "falsePositiveRate": 0.0002547427098630383,
+        "precision": 0.9983130736789878,
+        "inconclusive": 0
+      },
+      "rulesPlusModelWarning": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 49545,
+        "flaggedLegitimate": 12072,
+        "recall": 0.3099914282317756,
+        "falsePositiveRate": 0.09044864686666466,
+        "precision": 0.8040800428453186,
+        "inconclusive": 0
+      },
+      "warningFalsePositiveUpper95": 0.09174845659120912,
+      "additionalReview": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 53054,
+        "flaggedLegitimate": 24779,
+        "recall": 0.33194641706344985,
+        "falsePositiveRate": 0.18565498846165374,
+        "precision": 0.681638893528452,
+        "inconclusive": 0
+      },
+      "reviewFalsePositiveUpper95": 0.1874121486639077,
+      "rulesOrReviewOrUncertain": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 73175,
+        "flaggedLegitimate": 24813,
+        "recall": 0.4578387881897302,
+        "falsePositiveRate": 0.18590973117151677,
+        "precision": 0.7467751153202433,
+        "inconclusive": 0
+      },
+      "modelAveragePrecision": 0.757051550338518,
+      "modelRocAuc": 0.7434958472183605
+    }
+  },
+  "limits": {
+    "warningUpper95": 0.001,
+    "additionalReviewUpper95": 0.025
+  },
+  "warningQualified": false,
+  "reviewQualified": false,
+  "confidenceMethod": "One-sided 95% Wilson upper bound at URL-row level; campaign clustering can widen the true interval."
+}

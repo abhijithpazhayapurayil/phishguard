@@ -1,0 +1,99 @@
+{
+  "browser": "158.0.4370.33",
+  "profiles": [
+    {
+      "cpuSlowdown": 1,
+      "viewport": "375×800",
+      "network": "80 ms, 8 Mbps down, 2 Mbps up",
+      "coldLoadToHeadingMs": 772.1,
+      "scans": {
+        "oneUrl": {
+          "samples": 12,
+          "medianMs": 5.3,
+          "p95Ms": 7.4,
+          "maxMs": 7.4
+        },
+        "messageWithLinks": {
+          "samples": 12,
+          "medianMs": 5.7,
+          "p95Ms": 7.7,
+          "maxMs": 7.7
+        },
+        "boundedLargeMessage": {
+          "samples": 12,
+          "medianMs": 9.5,
+          "p95Ms": 22.4,
+          "maxMs": 22.4
+        }
+      },
+      "ocr": {
+        "englishPngColdMs": 1708.5,
+        "englishJpegWarmMs": 1024.3,
+        "hindiPasteMs": 788.4,
+        "englishOfflineMs": 1200.7
+      },
+      "checked": [
+        "manifest, icons and service-worker control",
+        "zero requests during local scan",
+        "defanged and inert URLs",
+        "mixed multi-link verdict and bounded large input",
+        "private-data-free Gemini request",
+        "offline Gemini failure leaves verdict visible",
+        "invalid image",
+        "English PNG and JPEG",
+        "corrected OCR text",
+        "OCR cancel",
+        "Hindi clipboard image",
+        "offline OCR and reload",
+        "reduced motion and single-column fit"
+      ]
+    },
+    {
+      "cpuSlowdown": 4,
+      "viewport": "375×800",
+      "network": "80 ms, 8 Mbps down, 2 Mbps up",
+      "coldLoadToHeadingMs": 1248.1,
+      "scans": {
+        "oneUrl": {
+          "samples": 12,
+          "medianMs": 20.1,
+          "p95Ms": 32.3,
+          "maxMs": 32.3
+        },
+        "messageWithLinks": {
+          "samples": 12,
+          "medianMs": 15.9,
+          "p95Ms": 27.8,
+          "maxMs": 27.8
+        },
+        "boundedLargeMessage": {
+          "samples": 12,
+          "medianMs": 36.9,
+          "p95Ms": 51.7,
+          "maxMs": 51.7
+        }
+      },
+      "ocr": {
+        "englishPngColdMs": 1536.7,
+        "englishJpegWarmMs": 1261.6,
+        "hindiPasteMs": 1016.1,
+        "englishOfflineMs": 1038.4
+      },
+      "checked": [
+        "manifest, icons and service-worker control",
+        "zero requests during local scan",
+        "defanged and inert URLs",
+        "mixed multi-link verdict and bounded large input",
+        "private-data-free Gemini request",
+        "offline Gemini failure leaves verdict visible",
+        "invalid image",
+        "English PNG and JPEG",
+        "corrected OCR text",
+        "OCR cancel",
+        "Hindi clipboard image",
+        "offline OCR and reload",
+        "reduced motion and single-column fit"
+      ]
+    }
+  ]
+}

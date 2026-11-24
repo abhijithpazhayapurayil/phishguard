@@ -10,8 +10,12 @@ type Link = {
   findings: Finding[];
   score: number;
   unresolved: boolean;
+  reviewRequested?: boolean;
 };
-export const RULE_VERSION = "1.2.1";
+export const RULE_VERSION = "1.2.2";
+export const URL_RULE_VERSION = "1.2.1";
+
+export type LinkReview = (url: URL, findingIds: readonly string[]) => boolean;
 
 type Verdict = "high" | "suspicious" | "inconclusive" | "low";
 type Scan = {
@@ -52,6 +56,7 @@ const RULES = [
 // Suppress clear advice immediately before a matched request. A later
 // affirmative request is still evaluated independently.
 const PROTECTIVE_PREFIX = /(?:\b(?:never|do not|don't|don’t|should not|shouldn't|avoid|not to|mat)\s+(?:(?:ever|directly|please)\s+)?|(?:कभी भी |कभी )?मत\s*)$/iu;
+const PROTECTIVE_REQUEST = /\b(?:never|do not|don[\x27’]t|will not|won[\x27’]t)\s+(?:ever\s+)?ask\s+(?:you|anyone)\s+to\s*$/iu;
 const PROTECTIVE_MATCH = /\bmat\s|मत\s/u;
 const PROTECTIVE_SUFFIX = /^\s+(?:karna\s+mana\s+hai|nahin\s+karna|नहीं करना)/iu;
 
@@ -59,7 +64,7 @@ function findCue(message: string, pattern: RegExp): RegExpExecArray | undefined 
   for (const match of message.matchAll(pattern)) {
     const prefix = message.slice(Math.max(0, match.index - 48), match.index);
     const suffix = message.slice(match.index + match[0].length, match.index + match[0].length + 32);
-    if (!PROTECTIVE_PREFIX.test(prefix) && !PROTECTIVE_MATCH.test(match[0])
+    if (!PROTECTIVE_PREFIX.test(prefix) && !PROTECTIVE_REQUEST.test(prefix) && !PROTECTIVE_MATCH.test(match[0])
       && !PROTECTIVE_SUFFIX.test(suffix)) return match;
   }
   return undefined;
@@ -165,7 +170,7 @@ function normalize(text: string): { text: string; offsets: number[] } {
   return { text: normalized, offsets };
 }
 
-export function scanInput(input: string, mode: "url" | "text"): Scan | {
+export function scanInput(input: string, mode: "url" | "text", reviewLink?: LinkReview): Scan | {
   status: "invalid"; message: string;
 } {
   if (!input.trim()) return { status: "invalid", message: "Enter a URL or paste a message." };
@@ -219,12 +224,20 @@ export function scanInput(input: string, mode: "url" | "text"): Scan | {
       continue;
     }
     seen.add(url.href);
-    links.push(analyzeUrl(url, identity, start, end));
+    const link = analyzeUrl(url, identity, start, end);
+    if (reviewLink && !link.unresolved && link.score < 30
+      && reviewLink(url, link.findings.map(({ id }) => id))) {
+      link.reviewRequested = true;
+    }
+    links.push(link);
   }
 
   if (skipped) coverage.push("Some URLs were skipped because the scan reached its 10-link limit.");
   if (invalidLink) coverage.push("Some URL candidates were invalid or unsupported.");
   if (links.some((link) => link.unresolved)) coverage.push("One or more shortened destinations were not resolved.");
+
+  const needsReview = links.some((link) => link.reviewRequested);
+  if (needsReview) coverage.push("The on-device model recommends verifying at least one link independently.");
 
   const messageFindings: Finding[] = [];
   if (mode === "text") {
@@ -251,7 +264,7 @@ export function scanInput(input: string, mode: "url" | "text"): Scan | {
     messageFindings,
     messageScore,
     score: risk,
-    verdict: verdictFor(risk, skipped || invalidLink || !usable || links.some((link) => link.unresolved)),
+    verdict: verdictFor(risk, skipped || invalidLink || !usable || needsReview || links.some((link) => link.unresolved)),
     coverage,
   };
 }

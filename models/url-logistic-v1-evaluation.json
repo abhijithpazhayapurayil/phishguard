@@ -1,0 +1,189 @@
+{
+  "featureMetadata": {
+    "version": 1,
+    "ruleVersion": "1.2.1",
+    "features": [
+      "log_host_length",
+      "log_registered_label_length",
+      "subdomain_depth",
+      "host_digit_fraction",
+      "host_hyphens",
+      "ip_host",
+      "idn_host",
+      "log_path_length",
+      "path_depth",
+      "path_digit_fraction",
+      "log_query_length",
+      "query_parameter_count",
+      "pct_encoded_count",
+      "path_has_file_extension",
+      "host_action_word_count",
+      "path_action_word_count",
+      "host_authority_word_count",
+      "authority_with_action",
+      "recognized_brand_mismatch",
+      "confusable_brand",
+      "unusual_label_entropy",
+      "suffix_warning",
+      "shortener",
+      "brand_signin_path"
+    ],
+    "statistics": {
+      "phiusiil": {
+        "sha256": "0a639fd03aea6308c5b1c10c92aa23c2ce1505447a9137271865cd0badc9a59a",
+        "rows": 235795,
+        "invalid": 800,
+        "duplicate": 1085,
+        "overlappingDomain": 0
+      },
+      "edgephish": {
+        "sha256": "fed0007163354d71e694ef3c83328417da4770c887f76697323ad2f86e665b90",
+        "rows": 340000,
+        "invalid": 501,
+        "duplicate": 490,
+        "overlappingDomain": 45714
+      }
+    },
+    "featureTiming": {
+      "runtime": "v22.14.0",
+      "samples": 17006,
+      "p95Ms": 0.02509999999892898
+    }
+  },
+  "trainingRows": 163772,
+  "trainingPhishing": 69268,
+  "trainingSeconds": 0.40349590000005264,
+  "operatingPointsChosenOn": "PhiUSIIL calibration partition only",
+  "testDesign": "PhiUSIIL registrable-domain groups; EdgePhish excludes all domains shared with PhiUSIIL",
+  "metrics": {
+    "calibration": {
+      "currentRules": {
+        "phishing": 16330,
+        "legitimate": 20165,
+        "flaggedPhishing": 143,
+        "flaggedLegitimate": 0,
+        "recall": 0.008756889161053277,
+        "falsePositiveRate": 0.0,
+        "precision": 1.0,
+        "inconclusive": 150
+      },
+      "modelAveragePrecision": 0.8706636982826401,
+      "rulesOrModelAtBudget": {
+        "phishing": 16330,
+        "legitimate": 20165,
+        "flaggedPhishing": 8070,
+        "flaggedLegitimate": 20,
+        "recall": 0.4941824862216779,
+        "falsePositiveRate": 0.0009918175055789735,
+        "precision": 0.9975278121137207,
+        "inconclusive": 0
+      },
+      "sameCalibrationFalseAlarmRate": {
+        "phishing": 16330,
+        "legitimate": 20165,
+        "flaggedPhishing": 6732,
+        "flaggedLegitimate": 0,
+        "recall": 0.41224739742804656,
+        "falsePositiveRate": 0.0,
+        "precision": 1.0,
+        "inconclusive": 0
+      },
+      "oneFalseAlarmPerThousand": {
+        "phishing": 16330,
+        "legitimate": 20165,
+        "flaggedPhishing": 8070,
+        "flaggedLegitimate": 20,
+        "recall": 0.4941824862216779,
+        "falsePositiveRate": 0.0009918175055789735,
+        "precision": 0.9975278121137207,
+        "inconclusive": 0
+      }
+    },
+    "test": {
+      "currentRules": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 75,
+        "flaggedLegitimate": 1,
+        "recall": 0.005570823739136894,
+        "falsePositiveRate": 4.955401387512388e-05,
+        "precision": 0.9868421052631579,
+        "inconclusive": 0
+      },
+      "modelAveragePrecision": 0.8491960577179031,
+      "rulesOrModelAtBudget": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 6765,
+        "flaggedLegitimate": 35,
+        "recall": 0.5024883012701478,
+        "falsePositiveRate": 0.001734390485629336,
+        "precision": 0.9948529411764706,
+        "inconclusive": 0
+      },
+      "sameCalibrationFalseAlarmRate": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 5726,
+        "flaggedLegitimate": 1,
+        "recall": 0.42531382307063803,
+        "falsePositiveRate": 4.955401387512388e-05,
+        "precision": 0.999825388510564,
+        "inconclusive": 0
+      },
+      "oneFalseAlarmPerThousand": {
+        "phishing": 13463,
+        "legitimate": 20180,
+        "flaggedPhishing": 6765,
+        "flaggedLegitimate": 34,
+        "recall": 0.5024883012701478,
+        "falsePositiveRate": 0.0016848364717542122,
+        "precision": 0.9949992645977349,
+        "inconclusive": 0
+      }
+    },
+    "external": {
+      "currentRules": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 20121,
+        "flaggedLegitimate": 34,
+        "recall": 0.1258923711262803,
+        "falsePositiveRate": 0.0002547427098630383,
+        "precision": 0.9983130736789878,
+        "inconclusive": 0
+      },
+      "modelAveragePrecision": 0.697702694718699,
+      "rulesOrModelAtBudget": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 154227,
+        "flaggedLegitimate": 130890,
+        "recall": 0.9649621152871543,
+        "falsePositiveRate": 0.9806845086462672,
+        "precision": 0.5409253043487411,
+        "inconclusive": 0
+      },
+      "sameCalibrationFalseAlarmRate": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 153156,
+        "flaggedLegitimate": 130707,
+        "recall": 0.9582611198358225,
+        "falsePositiveRate": 0.9793133934725927,
+        "precision": 0.5395419621437102,
+        "inconclusive": 0
+      },
+      "oneFalseAlarmPerThousand": {
+        "phishing": 159827,
+        "legitimate": 133468,
+        "flaggedPhishing": 154083,
+        "flaggedLegitimate": 130884,
+        "recall": 0.9640611411088239,
+        "falsePositiveRate": 0.980639554050409,
+        "precision": 0.5407047131773153,
+        "inconclusive": 0
+      }
+    }
+  }
+}

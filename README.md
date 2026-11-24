@@ -24,3 +24,5 @@ After a scan, open **Online explanation with Gemini**, review the fixed verdict 
 
 The result uses heuristic rules and reports only completed checks. Link and screenshot content can contain errors or missed signals. See [datasets/README.md](datasets/README.md) for the benchmark, source attribution, and current detection limits. Shortened destinations remain unresolved and no live reputation feed is configured.
 
+
+See [offline detector architecture](models/offline-detector-architecture.md) for the qualified on-device review model, evaluation limits and reproduction steps.

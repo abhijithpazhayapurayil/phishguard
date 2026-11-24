@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { scanInput, verdictFor } from "./scanner.ts";
 import { ScreenshotInput } from "./screenshot-input.tsx";
 import { OnlineExplanation } from "./online-explanation.tsx";
+import { offlineReview } from "./offline-review.ts";
 import "./style.css";
 
 type Mode = "url" | "text" | "screenshot";
@@ -23,12 +24,13 @@ const SAMPLES = {
 
 function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: Mode }) {
   const messageFindings = [...scan.messageFindings].sort((a, b) => b.weight - a.weight);
-  const links = [...scan.links].sort((a, b) => b.score - a.score);
+  const links = [...scan.links].sort((a, b) =>
+    b.score - a.score || Number(Boolean(b.reviewRequested)) - Number(Boolean(a.reviewRequested)));
   const advice = messageFindings.some(({ id }) => id === "coercion")
     ? "Keep your PIN and OTP private. Verify the request through the official app or a contact you already trust."
     : links.some(({ unresolved }) => unresolved)
       ? "Ask the sender for the full destination or go directly to the official site."
-      : scan.verdict === "high" || scan.verdict === "suspicious"
+      : scan.verdict === "high" || scan.verdict === "suspicious" || scan.verdict === "inconclusive"
         ? "Verify any request for payment or account access through the official app before acting."
         : null;
 
@@ -44,6 +46,7 @@ function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: M
           <small>Heuristic score</small>
         </div>
       </div>
+      {scan.verdict === "low" && <p className="coverage">The local scan could not verify the destination or sender.</p>}
       <ul className="coverage">{scan.coverage.map(item => <li key={item}>{item}</li>)}</ul>
       {mode !== "url" && (
         <div className="result-group">
@@ -59,13 +62,14 @@ function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: M
         <div className="result-group">
           <h3>Links checked <span className="count">{links.length}</span></h3>
           <ol className="link-list">{links.map((link, index) => {
-            const verdict = verdictFor(link.score, link.unresolved);
+            const verdict = verdictFor(link.score, link.unresolved || Boolean(link.reviewRequested));
             return (
               <li className="link-result" data-verdict={verdict} key={index}>
                 <div className="link-heading">
                   <strong>{link.display}</strong>
                   <span className="link-verdict">{SHORT_VERDICTS[verdict]} <span>· {link.score}/100</span></span>
                 </div>
+                {link.reviewRequested && <p>Verify this destination through an official source before opening it.</p>}
                 {link.findings.length > 0 && (
                   <ul className="signal-list">{link.findings.map(finding => (
                     <li key={finding.id}><span>{finding.label}</span><span className="points">+{finding.weight}</span></li>
@@ -98,7 +102,7 @@ function App() {
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setResult(scanInput(input, mode === "url" ? "url" : "text"));
+    setResult(scanInput(input, mode === "url" ? "url" : "text", offlineReview));
     setRun(previous => previous + 1);
   }
 
@@ -176,5 +180,3 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
     console.warn("Offline installation failed", error);
   });
 }
-
-

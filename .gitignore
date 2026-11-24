@@ -2,3 +2,4 @@ node_modules/
 dist/
 
 /datasets/edgephish.local.jsonl.gz
+/models/*.local*

@@ -1,0 +1,83 @@
+{
+  "browser": "158.0.4370.33",
+  "modelBytes": 9485,
+  "gzipBytes": 3571,
+  "profiles": [
+    {
+      "cpuSlowdown": 1,
+      "latency": {
+        "oneUrlRules": {
+          "medianMs": 0.052,
+          "p95Ms": 0.144
+        },
+        "oneUrlRulesAndModel": {
+          "medianMs": 0.056,
+          "p95Ms": 0.084
+        },
+        "tenLinksRulesAndModel": {
+          "medianMs": 0.492,
+          "p95Ms": 0.8
+        },
+        "nearLimitMessageRulesAndModel": {
+          "medianMs": 1.2,
+          "p95Ms": 1.524
+        },
+        "modelDotOrTreesOnly": {
+          "medianMs": 0.0052,
+          "p95Ms": 0.0072
+        }
+      }
+    },
+    {
+      "cpuSlowdown": 4,
+      "latency": {
+        "oneUrlRules": {
+          "medianMs": 0.308,
+          "p95Ms": 0.5
+        },
+        "oneUrlRulesAndModel": {
+          "medianMs": 0.48,
+          "p95Ms": 0.716
+        },
+        "tenLinksRulesAndModel": {
+          "medianMs": 4.044,
+          "p95Ms": 6.34
+        },
+        "nearLimitMessageRulesAndModel": {
+          "medianMs": 7.532,
+          "p95Ms": 13.8
+        },
+        "modelDotOrTreesOnly": {
+          "medianMs": 0.0404,
+          "p95Ms": 0.065
+        }
+      }
+    },
+    {
+      "cpuSlowdown": 6,
+      "latency": {
+        "oneUrlRules": {
+          "medianMs": 0.104,
+          "p95Ms": 1.16
+        },
+        "oneUrlRulesAndModel": {
+          "medianMs": 0.98,
+          "p95Ms": 2.588
+        },
+        "tenLinksRulesAndModel": {
+          "medianMs": 4.788,
+          "p95Ms": 11.192
+        },
+        "nearLimitMessageRulesAndModel": {
+          "medianMs": 12.956,
+          "p95Ms": 26.64
+        },
+        "modelDotOrTreesOnly": {
+          "medianMs": 0.0302,
+          "p95Ms": 0.0462
+        }
+      }
+    }
+  ],
+  "type": "Desktop Edge mobile viewport and CPU throttling"
+}

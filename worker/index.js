@@ -1,4 +1,5 @@
 import { explainEvidence, validateEvidence } from "../scripts/gemini.mjs";
+import { createGeminiScan } from "../scripts/gemini-scan.mjs";
 
 const MAX_BODY = 1024;
 const SITE_ORIGIN = "https://phishguard-local-scanner.freekazoo256.chatgpt.site";
@@ -34,15 +35,17 @@ async function readEvidence(request) {
 
 export function createWorker() {
   let nextRequest = 0;
+  const scan = createGeminiScan();
   return {
     async fetch(request, env) {
       const url = new URL(request.url);
-      if (url.pathname !== "/api/explain") {
+      if (url.pathname !== "/api/explain" && url.pathname !== "/api/scan") {
         return env.ASSETS?.fetch(request) ?? new Response("Not found", { status: 404 });
       }
       if (!request.headers.get("oai-authenticated-user-id")) {
-        return reply(401, { error: "Sign in to request an online explanation." });
+        return reply(401, { error: "Sign in to use Gemini." });
       }
+      if (url.pathname === "/api/scan") return scan(request, env.GEMINI_API_KEY, SITE_ORIGIN);
       if (request.method !== "POST") {
         return reply(405, { error: "Use POST to request an online explanation." });
       }

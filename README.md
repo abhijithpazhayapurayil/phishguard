@@ -14,11 +14,13 @@ Use `pnpm build` and `pnpm preview` to try the production PWA. Open it online an
 
 Choose **Screenshot**, select English or Hindi, and upload a PNG or JPEG or paste an image while focused in the upload area. Review and correct the extracted text, then choose **Scan**. The browser downloads the worker, OCR engine and selected language pack on first use. It processes the screenshot on-device and caches only those program assets for subsequent offline use. A new build or browser cache eviction can require another download.
 
-## Optional Gemini explanation
+## Optional Gemini online scan
 
-Gemini is available in the local Node-backed Vite environment when `GEMINI_API_KEY` is supplied as a server process secret. Start `pnpm dev` on loopback with that environment variable set. For a local production preview, set it for both `pnpm build` and `pnpm preview`. Keep the key out of source control and avoid the client-exposed `VITE_` prefix.
+After a local scan, open **Online scan with Gemini** to review or edit the submitted link, message, or extracted screenshot text. Only clicking **Send** submits that text to Google. The image stays on-device. Gemini examines the text and provides a separate assessment. It does not retrieve the page, resolve redirects, verify a sender, or replace the local verdict.
 
-After a scan, open **Online explanation with Gemini**, review the fixed verdict and rule IDs, and explicitly send them. The server validates that payload and applies a deadline. The explanation is independent of the local verdict. Screenshots, input text, and examined URLs stay on-device. The private hosted Site uses an authenticated Worker route. Set GEMINI_API_KEY as a runtime secret in the Site settings. The browser never receives the key. For hosting, pnpm build:sites packages the Worker and browser assets. Keep the Site private and review [Google's Gemini API terms](https://aistudio.google.com/docs/terms) before sharing access.
+For Vercel, set `GEMINI_API_KEY` as a sensitive Production environment variable and redeploy. The Vite build serves `dist` and Vercel runs `api/scan.js` on the server. Keep the key out of source control and avoid the client-exposed `VITE_` prefix. The route throttles bursts per instance. Apply Vercel's Firewall rate limiting to `/api/scan` for a shared limit on public deployments.
+
+For local testing, set `GEMINI_API_KEY` in the server process and start `pnpm dev` on loopback. For local production preview, set it for both `pnpm build` and `pnpm preview`. The private hosted Site uses a runtime secret and authenticated Worker routes. Use `pnpm build:sites` for that host. It also offers the explanation-only option that sends just the local verdict and triggered rule IDs.
 
 ## Detection and benchmark
 

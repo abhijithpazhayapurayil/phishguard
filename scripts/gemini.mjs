@@ -24,25 +24,30 @@ export function parseExplanation(value) {
 }
 
 export async function explainEvidence(key, evidence) {
+  const result = await generateGemini(key, {
+    contents: [{ parts: [{ text: "Explain the following fixed phishing heuristic categories in simple English. Keep the verdict unchanged. Do not infer any missing facts, URLs, brands, or messages. Give one low-risk verification step. A low score does not establish safety. Evidence: " + JSON.stringify(evidence) }] }],
+    generationConfig: {
+      maxOutputTokens: 512,
+      responseMimeType: "application/json",
+      responseJsonSchema: {
+        type: "object", required: ["summary", "nextStep"],
+        properties: { summary: { type: "string" }, nextStep: { type: "string" } },
+      },
+    },
+  }, 3000);
+  return parseExplanation(result);
+}
+
+export async function generateGemini(key, body, timeout) {
   const upstream = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent", {
     method: "POST",
     redirect: "error",
-    signal: AbortSignal.timeout(3000),
+    signal: AbortSignal.timeout(timeout),
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: "Explain the following fixed phishing heuristic categories in simple English. Keep the verdict unchanged. Do not infer any missing facts, URLs, brands, or messages. Give one low-risk verification step. A low score does not establish safety. Evidence: " + JSON.stringify(evidence) }] }],
-      generationConfig: {
-        maxOutputTokens: 512,
-        responseMimeType: "application/json",
-        responseJsonSchema: {
-          type: "object", required: ["summary", "nextStep"],
-          properties: { summary: { type: "string" }, nextStep: { type: "string" } },
-        },
-      },
-    }),
+    body: JSON.stringify(body),
   });
   if (!upstream.ok) throw new Error("Gemini is unavailable");
-  return parseExplanation(await upstream.json());
+  return upstream.json();
 }
 
 export function geminiPlugin() {

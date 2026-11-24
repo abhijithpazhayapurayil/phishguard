@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { scanInput, verdictFor } from "./scanner.ts";
 import { ScreenshotInput } from "./screenshot-input.tsx";
 import { OnlineExplanation } from "./online-explanation.tsx";
+import { OnlineScan } from "./online-scan.tsx";
 import { offlineReview } from "./offline-review.ts";
 import "./style.css";
 
@@ -22,7 +23,7 @@ const SAMPLES = {
   text: "India Post: Final warning. Pay a redelivery fee at https://delivery-review.example/ and forward your OTP.",
 };
 
-function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: Mode }) {
+function Result({ scan, mode, input }: { scan: Extract<Scan, { status: "ok" }>; mode: Mode; input: string }) {
   const messageFindings = [...scan.messageFindings].sort((a, b) => b.weight - a.weight);
   const links = [...scan.links].sort((a, b) =>
     b.score - a.score || Number(Boolean(b.reviewRequested)) - Number(Boolean(a.reviewRequested)));
@@ -81,6 +82,7 @@ function Result({ scan, mode }: { scan: Extract<Scan, { status: "ok" }>; mode: M
         </div>
       )}
       {advice && <aside className="next-action"><h3>What to do</h3><p>{advice}</p></aside>}
+      {__PHISHGUARD_ONLINE_SCAN__ && <OnlineScan mode={mode} input={input} />}
       {__PHISHGUARD_GEMINI__ && <OnlineExplanation verdict={scan.verdict} findings={[
         ...messageFindings.map(item => item.id), ...links.flatMap(link => link.findings.map(item => item.id)),
       ]} />}
@@ -115,7 +117,7 @@ function App() {
     <main>
       <header className="masthead">
         <div className="brand"><span className="brand-mark" aria-hidden="true">P</span><h1>PhishGuard</h1></div>
-        <span className="privacy"><span aria-hidden="true" />Scans stay on this device</span>
+        <span className="privacy"><span aria-hidden="true" />Local scans stay on this device</span>
       </header>
       <div className="workspace">
         <div className="entry">
@@ -167,7 +169,7 @@ function App() {
             </div>
           )}
           {result?.status === "invalid" && <p className="input-error">{result.message}</p>}
-          {result?.status === "ok" && <Result key={run} scan={result} mode={mode} />}
+          {result?.status === "ok" && <Result key={run} scan={result} mode={mode} input={input} />}
         </section>
       </div>
     </main>

@@ -1,12 +1,40 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { Readable } from "node:stream";
 import { defineConfig } from "vite";
 import { ocrAssetPlugin, ocrAssets } from "./scripts/ocr-assets.mjs";
 import { geminiPlugin } from "./scripts/gemini.mjs";
+import { createGeminiScan } from "./scripts/gemini-scan.mjs";
+
+function geminiScanPlugin() {
+  function setup(server) {
+    const scan = createGeminiScan();
+    server.middlewares.use(async (request, response, next) => {
+      if (request.url !== "/api/scan") return next();
+      if (!["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(request.socket.remoteAddress)) {
+        response.writeHead(403).end();
+        return;
+      }
+      const url = new URL(request.url, `http://${request.headers.host}`);
+      const hasBody = request.method !== "GET" && request.method !== "HEAD";
+      const result = await scan(new Request(url, {
+        method: request.method,
+        headers: request.headers,
+        ...(hasBody ? { body: Readable.toWeb(request), duplex: "half" } : {}),
+      }), process.env.GEMINI_API_KEY);
+      response.writeHead(result.status, Object.fromEntries(result.headers));
+      response.end(await result.text());
+    });
+  }
+  return { name: "phishguard-online-scan", configureServer: setup, configurePreviewServer: setup };
+}
 
 export default defineConfig(({ mode }) => ({
   base: "./",
-  define: { __PHISHGUARD_GEMINI__: JSON.stringify(mode === "sites" || Boolean(process.env.GEMINI_API_KEY)) },
+  define: {
+    __PHISHGUARD_GEMINI__: JSON.stringify(mode === "sites" || (!process.env.VERCEL && Boolean(process.env.GEMINI_API_KEY))),
+    __PHISHGUARD_ONLINE_SCAN__: JSON.stringify(mode === "sites" || Boolean(process.env.VERCEL || process.env.GEMINI_API_KEY)),
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,
@@ -18,7 +46,7 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  plugins: [ocrAssetPlugin(), geminiPlugin(), {
+  plugins: [ocrAssetPlugin(), geminiPlugin(), geminiScanPlugin(), {
     name: "phishguard-offline",
     apply: "build",
     enforce: "post",

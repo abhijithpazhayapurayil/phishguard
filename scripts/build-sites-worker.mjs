@@ -10,8 +10,9 @@ const configDir = new URL(".openai/", dist);
 await Promise.all([mkdir(server, { recursive: true }), mkdir(configDir, { recursive: true })]);
 const worker = await readFile(new URL("../worker/index.js", import.meta.url), "utf8");
 await Promise.all([
-  writeFile(new URL("index.js", server), worker.replace("../scripts/gemini.mjs", "./gemini.mjs")),
+  writeFile(new URL("index.js", server), worker.replaceAll("../scripts/gemini", "./gemini")),
   cp(new URL("./gemini.mjs", import.meta.url), new URL("gemini.mjs", server)),
+  cp(new URL("./gemini-scan.mjs", import.meta.url), new URL("gemini-scan.mjs", server)),
   cp(new URL("../.openai/hosting.json", import.meta.url), new URL("hosting.json", configDir)),
   writeFile(new URL("wrangler.json", server), JSON.stringify({
     name: "phishguard",

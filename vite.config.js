@@ -4,10 +4,12 @@ import { defineConfig } from "vite";
 import { ocrAssetPlugin, ocrAssets } from "./scripts/ocr-assets.mjs";
 import { geminiPlugin } from "./scripts/gemini.mjs";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: "./",
-  define: { __PHISHGUARD_GEMINI__: JSON.stringify(Boolean(process.env.GEMINI_API_KEY)) },
+  define: { __PHISHGUARD_GEMINI__: JSON.stringify(mode === "sites" || Boolean(process.env.GEMINI_API_KEY)) },
   build: {
+    outDir: "dist",
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -65,6 +67,5 @@ export default defineConfig({
       this.emitFile({ type: "asset", fileName: "sw.js", source });
     },
   }],
-});
-
+}));
 

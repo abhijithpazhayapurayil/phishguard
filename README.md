@@ -18,8 +18,9 @@ Choose **Screenshot**, select English or Hindi, and upload a PNG or JPEG or past
 
 Gemini is available in the local Node-backed Vite environment when `GEMINI_API_KEY` is supplied as a server process secret. Start `pnpm dev` on loopback with that environment variable set. For a local production preview, set it for both `pnpm build` and `pnpm preview`. Keep the key out of source control and avoid the client-exposed `VITE_` prefix.
 
-After a scan, open **Online explanation with Gemini**, review the fixed verdict and rule IDs, and explicitly send them. The server validates that payload and applies a deadline. The explanation is independent of the local verdict. Screenshots, input text, and examined URLs stay on-device. The deployed static Site serves the local features. A hosted Gemini deployment requires an authenticated server-side route, secret configuration, and review against [Google's Gemini API terms](https://aistudio.google.com/docs/terms).
+After a scan, open **Online explanation with Gemini**, review the fixed verdict and rule IDs, and explicitly send them. The server validates that payload and applies a deadline. The explanation is independent of the local verdict. Screenshots, input text, and examined URLs stay on-device. The private hosted Site uses an authenticated Worker route. Set GEMINI_API_KEY as a runtime secret in the Site settings. The browser never receives the key. For hosting, pnpm build:sites packages the Worker and browser assets. Keep the Site private and review [Google's Gemini API terms](https://aistudio.google.com/docs/terms) before sharing access.
 
 ## Detection and benchmark
 
 The result uses heuristic rules and reports only completed checks. Link and screenshot content can contain errors or missed signals. See [datasets/README.md](datasets/README.md) for the benchmark, source attribution, and current detection limits. Shortened destinations remain unresolved and no live reputation feed is configured.
+

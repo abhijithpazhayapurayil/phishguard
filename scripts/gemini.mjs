@@ -23,6 +23,28 @@ export function parseExplanation(value) {
   return { summary: payload.summary, nextStep: payload.nextStep };
 }
 
+export async function explainEvidence(key, evidence) {
+  const upstream = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent", {
+    method: "POST",
+    redirect: "error",
+    signal: AbortSignal.timeout(3000),
+    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: "Explain the following fixed phishing heuristic categories in simple English. Keep the verdict unchanged. Do not infer any missing facts, URLs, brands, or messages. Give one low-risk verification step. A low score does not establish safety. Evidence: " + JSON.stringify(evidence) }] }],
+      generationConfig: {
+        maxOutputTokens: 512,
+        responseMimeType: "application/json",
+        responseJsonSchema: {
+          type: "object", required: ["summary", "nextStep"],
+          properties: { summary: { type: "string" }, nextStep: { type: "string" } },
+        },
+      },
+    }),
+  });
+  if (!upstream.ok) throw new Error("Gemini is unavailable");
+  return parseExplanation(await upstream.json());
+}
+
 export function geminiPlugin() {
   function setup(server) {
     let nextRequest = 0;
@@ -51,25 +73,7 @@ export function geminiPlugin() {
         if (Date.now() < nextRequest) return reply(429, { error: "Wait a moment before requesting another explanation." });
         nextRequest = Date.now() + 2000;
 
-        const upstream = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent", {
-          method: "POST",
-          redirect: "error",
-          signal: AbortSignal.timeout(3000),
-          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: "Explain the following fixed phishing heuristic categories in simple English. Keep the verdict unchanged. Do not infer any missing facts, URLs, brands, or messages. Give one low-risk verification step. A low score does not establish safety. Evidence: " + JSON.stringify(evidence) }] }],
-            generationConfig: {
-              maxOutputTokens: 512,
-              responseMimeType: "application/json",
-              responseJsonSchema: {
-                type: "object", required: ["summary", "nextStep"],
-                properties: { summary: { type: "string" }, nextStep: { type: "string" } },
-              },
-            },
-          }),
-        });
-        if (!upstream.ok) return reply(502, { error: "Gemini is unavailable. The local verdict still applies." });
-        return reply(200, parseExplanation(await upstream.json()));
+        return reply(200, await explainEvidence(key, evidence));
       } catch {
         return reply(502, { error: "The online explanation could not complete. The local verdict still applies." });
       }

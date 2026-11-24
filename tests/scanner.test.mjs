@@ -72,3 +72,19 @@ test("invalid, unsupported and oversized input reports incomplete or rejected co
   assert.equal(scan("See ftp://example.com", "text").verdict, "inconclusive");
   assert.equal(scan("https://example.com", "url").verdict, "low");
 });
+
+test("flags Parivahan and mParivahan lookalikes while allowing the government domain", () => {
+  for (const input of [
+    "hxxps://parivahan-gov[.]in/vehicle-challan",
+    "https://parivahan.gov.in.example/",
+    "https://mparivahan-pay.example/",
+  ]) {
+    const result = scan(input);
+    assert.equal(result.verdict, "suspicious", input);
+    assert.equal(result.score, 50, input);
+    assert.match(result.links[0].findings[0].label, /recognized domains \(parivahan\.gov\.in\)/);
+  }
+  for (const input of ["https://parivahan.gov.in/", "https://echallan.parivahan.gov.in/"]) {
+    assert.equal(scan(input).score, 0, input);
+  }
+});

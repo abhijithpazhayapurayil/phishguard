@@ -11,7 +11,7 @@ type Link = {
   score: number;
   unresolved: boolean;
 };
-export const RULE_VERSION = "1.2.0";
+export const RULE_VERSION = "1.2.1";
 
 type Verdict = "high" | "suspicious" | "inconclusive" | "low";
 type Scan = {
@@ -29,6 +29,8 @@ const BRANDS = new Map([
   ["sbi", ["sbi.co.in", "onlinesbi.sbi", "sbi.bank.in"]],
   ["netflix", ["netflix.com"]],
   ["indiapost", ["indiapost.gov.in"]],
+  ["parivahan", ["parivahan.gov.in"]],
+  ["mparivahan", ["parivahan.gov.in"]],
 ]);
 const SHORTENERS = new Set(["bit.ly", "tinyurl.com", "is.gd", "t.co"]);
 const TLDS = new Set(["top", "xyz", "buzz", "click", "cfd", "rest"]);
@@ -103,7 +105,7 @@ function analyzeUrl(
   for (const [brand, domains] of BRANDS) {
     if (domains.includes(registrable)) continue;
     if (labels.some((label) => label.split("-").includes(brand))) {
-      add("brand", "A brand appears on a domain outside its recognized domains", 50);
+      add("brand", `The hostname uses ${brand} outside its recognized domains (${domains.join(", ")}).`, 50);
       break;
     }
   }

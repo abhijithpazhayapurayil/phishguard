@@ -20,7 +20,7 @@ export function OnlineScan({ mode, input }: { mode: "url" | "text" | "screenshot
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: mode === "url" ? "url" : "text", input: submission }),
-        signal: AbortSignal.timeout(8500),
+        signal: AbortSignal.timeout(14000),
       });
       const result = await response.json();
       if (!response.ok) {

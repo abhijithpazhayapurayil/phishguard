@@ -60,3 +60,27 @@ test("online scan rejects a model response claiming a link is safe", async t => 
   }));
   assert.equal((await createGeminiScan()(post(link), "test")).status, 502);
 });
+
+test("online scan recovers from an upstream timeout with one retry", async t => {
+  const fetch = t.mock.method(globalThis, "fetch", async () => Response.json({
+    candidates: [{ content: { parts: [{ text: '{"risk":"inconclusive","summary":"The destination is unverified."}' }] } }],
+  }));
+  fetch.mock.mockImplementationOnce(async () => { throw new DOMException("deadline", "TimeoutError"); });
+  const response = await createGeminiScan()(post(link), "test");
+  assert.equal(response.status, 200);
+  assert.equal(fetch.mock.callCount(), 2);
+});
+
+test("online scan reports an exhausted retry and does not retry provider quota errors", async t => {
+  const fetch = t.mock.method(globalThis, "fetch", async () => { throw new DOMException("deadline", "TimeoutError"); });
+  const timedOut = await createGeminiScan()(post(message), "test");
+  assert.equal(timedOut.status, 504);
+  assert.match((await timedOut.json()).error, /too long/);
+  assert.equal(fetch.mock.callCount(), 2);
+
+  fetch.mock.mockImplementation(async () => new Response(null, { status: 429 }));
+  const limited = await createGeminiScan()(post(message), "test");
+  assert.equal(limited.status, 429);
+  assert.match((await limited.json()).error, /request limit/);
+  assert.equal(fetch.mock.callCount(), 3);
+});

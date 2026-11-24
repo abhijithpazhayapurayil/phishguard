@@ -47,7 +47,11 @@ export async function generateGemini(key, body, timeout) {
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
     body: JSON.stringify(body),
   });
-  if (!upstream.ok) throw new Error("Gemini is unavailable");
+  if (!upstream.ok) {
+    const error = new Error("Gemini rejected the request");
+    error.status = upstream.status;
+    throw error;
+  }
   return upstream.json();
 }
 

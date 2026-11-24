@@ -39,12 +39,19 @@ test("Gemini receives the opted-in message or URL and returns a separate assessm
     assert.deepEqual(await response.json(), { risk: "suspicious", summary: "Unexpected redelivery fee." });
     const [url, options] = fetch.mock.calls.at(-1).arguments;
     assert.equal(new URL(url).hostname, "generativelanguage.googleapis.com");
+    assert.equal(options.redirect, "manual");
     const body = JSON.parse(options.body);
     assert.deepEqual(JSON.parse(body.contents[0].parts[0].text), payload);
     assert.equal(body.tools, undefined);
     assert.equal((await scan(post(payload), "test")).status, 429);
   }
   assert.equal(fetch.mock.callCount(), 2);
+});
+
+test("online scan rejects provider redirects without forwarding the key", async t => {
+  const fetch = t.mock.method(globalThis, "fetch", async () => Response.redirect("https://redirect.example/", 307));
+  assert.equal((await createGeminiScan()(post(link), "test")).status, 502);
+  assert.equal(fetch.mock.callCount(), 1);
 });
 
 test("online scan rejects a model response claiming a link is safe", async t => {

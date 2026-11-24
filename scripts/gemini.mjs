@@ -41,7 +41,8 @@ export async function explainEvidence(key, evidence) {
 export async function generateGemini(key, body, timeout) {
   const upstream = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent", {
     method: "POST",
-    redirect: "error",
+    // Workers support manual redirects. Reject the 3xx response below without forwarding the key.
+    redirect: "manual",
     signal: AbortSignal.timeout(timeout),
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
     body: JSON.stringify(body),

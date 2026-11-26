@@ -1,5 +1,6 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createRoot } from "react-dom/client";
+import { HeroArt } from "./hero-art.tsx";
 import { scanInput, verdictFor } from "./scanner.ts";
 import { ScreenshotInput } from "./screenshot-input.tsx";
 import { OnlineExplanation } from "./online-explanation.tsx";
@@ -9,6 +10,16 @@ import "./style.css";
 
 type Mode = "url" | "text" | "screenshot";
 type Scan = ReturnType<typeof scanInput>;
+
+const MODES = [
+  { value: "url", label: "Link", icon: "link" },
+  { value: "text", label: "Message", icon: "message" },
+  { value: "screenshot", label: "Screenshot", icon: "image" },
+] as const;
+
+function Icon({ name }: { name: string }) {
+  return <span className={`icon icon-${name}`} aria-hidden="true" />;
+}
 
 const VERDICTS = {
   high: "High risk",
@@ -40,13 +51,14 @@ function Result({ scan, mode, input }: { scan: Extract<Scan, { status: "ok" }>; 
       <div className="verdict-banner" data-verdict={scan.verdict}>
         <div>
           <span className="scan-complete"><span aria-hidden="true" />Scan complete</span>
-          <h2>{VERDICTS[scan.verdict]}</h2>
+          <h3>{VERDICTS[scan.verdict]}</h3>
         </div>
         <div className="score">
           <span><strong>{scan.score}</strong>/100</span>
           <small>Heuristic score</small>
         </div>
       </div>
+      {advice && <aside className="next-action"><h3>What to do</h3><p>{advice}</p></aside>}
       {scan.verdict === "low" && <p className="coverage">The local scan could not verify the destination or sender.</p>}
       <ul className="coverage">{scan.coverage.map(item => <li key={item}>{item}</li>)}</ul>
       {mode !== "url" && (
@@ -81,7 +93,6 @@ function Result({ scan, mode, input }: { scan: Extract<Scan, { status: "ok" }>; 
           })}</ol>
         </div>
       )}
-      {advice && <aside className="next-action"><h3>What to do</h3><p>{advice}</p></aside>}
       {__PHISHGUARD_ONLINE_SCAN__ && <OnlineScan mode={mode} input={input} />}
       {__PHISHGUARD_GEMINI__ && <OnlineExplanation verdict={scan.verdict} findings={[
         ...messageFindings.map(item => item.id), ...links.flatMap(link => link.findings.map(item => item.id)),
@@ -96,6 +107,16 @@ function App() {
   const [result, setResult] = useState<Scan | null>(null);
   const [run, setRun] = useState(0);
   const field = useRef<HTMLTextAreaElement>(null);
+  const report = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (result?.status !== "ok" || !matchMedia("(max-width: 760px)").matches) return;
+    if (!report.current || report.current.getBoundingClientRect().top < innerHeight * 0.58) return;
+    report.current.scrollIntoView({
+      block: "start",
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  }, [run, result]);
 
   function updateInput(value: string) {
     setInput(value);
@@ -114,65 +135,82 @@ function App() {
       : "";
 
   return (
-    <main>
+    <>
       <header className="masthead">
-        <div className="brand"><span className="brand-mark" aria-hidden="true">P</span><h1>PhishGuard</h1></div>
-        <span className="privacy"><span aria-hidden="true" />Local scans stay on this device</span>
-      </header>
-      <div className="workspace">
-        <div className="entry">
-          <div className="intro">
-            <p className="headline">Check a link<br />or message.</p>
-          </div>
-          <form className="editor" onSubmit={submit}>
-            <fieldset className="mode-picker">
-              <legend className="visually-hidden">Input type</legend>
-              {(["url", "text", "screenshot"] as const).map(option => (
-                <label key={option}>
-                  <input type="radio" name="mode" value={option} checked={mode === option}
-                    onChange={() => { setMode(option); updateInput(""); }} />
-                  <span>{option === "url" ? "URL" : option === "text" ? "Message" : "Screenshot"}</span>
-                </label>
-              ))}
-            </fieldset>
-            {mode === "screenshot" && <ScreenshotInput onText={updateInput} />}
-            <label className="input-label" htmlFor="scan-input">{mode === "url" ? "URL to check" : mode === "text" ? "Message to check" : "Extracted text"}</label>
-            <textarea ref={field} id="scan-input" value={input} rows={mode === "url" ? 4 : 6}
-              className={mode === "url" ? "url-input" : ""}
-              placeholder={mode === "url" ? "https://" : "Paste the message here"}
-              autoComplete="off" spellCheck={false} autoCapitalize="off"
-              onChange={event => updateInput(event.target.value)} />
-            <div className="actions">
-              <button type="submit" className="scan-button">Scan</button>
-              {input && <button type="button" className="quiet" onClick={() => {
-                updateInput("");
-                field.current?.focus();
-              }}>Clear</button>}
-              {mode !== "screenshot" && <button type="button" className="quiet sample" onClick={() => {
-                updateInput(SAMPLES[mode]);
-                field.current?.focus();
-              }}>Try a sample</button>}
-            </div>
-          </form>
+        <div className="shell masthead-inner">
+          <div className="brand"><span className="brand-mark"><Icon name="shield" /></span>PhishGuard</div>
+          <span className="privacy"><span aria-hidden="true" />On-device scanning</span>
         </div>
-        <section className="inspection" aria-label="Scan report">
-          <div className="inspection-header">
-            <span className="inspection-mark" aria-hidden="true" />
-            <h2>Scan report</h2>
+      </header>
+      <main className="shell">
+        <section className="hero" aria-labelledby="page-title">
+          <HeroArt />
+          <div className="hero-content">
+            <h1 id="page-title">Think before<br />you <em>click.</em></h1>
+            <p>Check suspicious links, messages, and screenshots for signs of phishing.</p>
           </div>
-          <div role="status" className="visually-hidden">{announcement}</div>
-          {result === null && (
-            <div className="empty-state">
-              <span className="empty-mark" aria-hidden="true" />
-              <p>Ready to scan</p>
-              <p className="muted">The verdict and findings will appear here after you scan.</p>
-            </div>
-          )}
-          {result?.status === "invalid" && <p className="input-error">{result.message}</p>}
-          {result?.status === "ok" && <Result key={run} scan={result} mode={mode} input={input} />}
         </section>
-      </div>
-    </main>
+        <div className="workspace">
+          <section className="entry panel" aria-labelledby="scan-title">
+            <div className="panel-heading">
+              <span className="panel-icon"><Icon name="scan" /></span>
+              <h2 id="scan-title">New scan</h2>
+            </div>
+            <form className="editor" onSubmit={submit}>
+              <fieldset className="mode-picker">
+                <legend className="visually-hidden">Input type</legend>
+                {MODES.map(option => (
+                  <label key={option.value}>
+                    <input type="radio" name="mode" value={option.value} checked={mode === option.value}
+                      onChange={() => { setMode(option.value); updateInput(""); }} />
+                    <span className="mode-option"><Icon name={option.icon} />{option.label}</span>
+                  </label>
+                ))}
+              </fieldset>
+              {mode === "screenshot" && <ScreenshotInput onText={updateInput} />}
+              <div className="field-heading">
+                <label className="input-label" htmlFor="scan-input">{mode === "url" ? "Link to check" : mode === "text" ? "Message to check" : "Extracted text"}</label>
+                {mode !== "screenshot" && <button type="button" className="quiet sample" onClick={() => {
+                  updateInput(SAMPLES[mode]);
+                  field.current?.focus();
+                }}>Try a sample</button>}
+              </div>
+              <textarea ref={field} id="scan-input" value={input} rows={mode === "url" ? 3 : 5}
+                className={mode === "url" ? "url-input" : ""}
+                aria-invalid={result?.status === "invalid"}
+                aria-describedby={result?.status === "invalid" ? "scan-error" : undefined}
+                placeholder={mode === "url" ? "https://example.com" : mode === "text" ? "Paste the message here" : "Text from your screenshot appears here"}
+                autoComplete="off" spellCheck={false} autoCapitalize="off"
+                onChange={event => updateInput(event.target.value)} />
+              {result?.status === "invalid" && <p className="input-error" id="scan-error">{result.message}</p>}
+              <div className="actions">
+                <button type="submit" className="scan-button"><Icon name="scan" />Run scan<span className="button-arrow" aria-hidden="true" /></button>
+                {input && <button type="button" className="quiet" onClick={() => {
+                  updateInput("");
+                  field.current?.focus();
+                }}>Clear</button>}
+              </div>
+            </form>
+          </section>
+          <section className="inspection panel" ref={report} aria-labelledby="report-title">
+            <div className="panel-heading">
+              <span className="panel-icon report-icon"><Icon name="report" /></span>
+              <h2 id="report-title">Scan report</h2>
+            </div>
+            <div role="status" className="visually-hidden">{announcement}</div>
+            {result?.status !== "ok" && (
+              <div className="empty-state">
+                <span className="empty-mark"><Icon name="report" /></span>
+                <p>Ready to scan</p>
+                <p className="muted">Your verdict and findings will appear here.</p>
+              </div>
+            )}
+            {result?.status === "ok" && <Result key={run} scan={result} mode={mode} input={input} />}
+          </section>
+        </div>
+        <footer className="footer"><Icon name="lock" /><span>Your input stays on this device during local scans.</span></footer>
+      </main>
+    </>
   );
 }
 
